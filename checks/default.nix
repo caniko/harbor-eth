@@ -2,7 +2,9 @@
   pkgs,
   self,
   nixpkgs,
+  nixpkgs-darwin,
   meta,
+  harborRoot,
 }: {
   dev-shell = meta.devShellTests.mkCheck {
     inherit pkgs;
@@ -21,12 +23,12 @@
     system = pkgs.stdenv.hostPlatform.system;
     flakeNix = ../templates/default/flake.nix;
     inputs = {
-      harbor-eth = self;
-      inherit nixpkgs;
+      harbor = harborRoot;
+      inherit nixpkgs nixpkgs-darwin;
       inherit (self.inputs) treefmt-nix;
     };
     requiredFiles = ["flake.nix" "foundry.toml" "src/Counter.sol" "test/Counter.t.sol"];
-    requiredInputs = ["harbor-eth"];
+    requiredInputs = ["harbor" "nixpkgs-darwin"];
     commands = ["anvil" "forge" "solc"];
     env = {
       FOUNDRY_SOLC = "${pkgs.solc}/bin/solc";
