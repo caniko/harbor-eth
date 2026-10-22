@@ -21,7 +21,12 @@
     harbor-meta,
     treefmt-nix,
     ...
-  }: let
+  } @ outputArgs: let
+    harborRoot =
+      outputArgs.harborRoot or (harbor-meta.lib.standaloneRoot {
+        core = harbor-meta;
+        evm = self;
+      });
     systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
     forAllSystems = f:
       nixpkgs.lib.genAttrs systems (system:
@@ -51,7 +56,7 @@
 
     checks = forAllSystems (pkgs:
       import ./checks {
-        inherit pkgs self nixpkgs nixpkgs-darwin;
+        inherit pkgs self nixpkgs nixpkgs-darwin harborRoot;
         meta = harbor-meta.lib;
       });
 
