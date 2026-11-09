@@ -34,7 +34,10 @@
           if system == "x86_64-darwin"
           then nixpkgs-darwin
           else nixpkgs
-        ) {inherit system;}));
+        ) {
+          inherit system;
+          overlays = [lib.foundryOverlay];
+        }));
     lib = import ./lib {inherit nixpkgs harbor-meta;};
   in {
     inherit lib;
